@@ -11,6 +11,8 @@
 |
 */
 
+$app->get('teste', 'TesteController@index');
+
 $app->group(['prefix' => 'api/v1', 'middleware' => 'auth'], function() use ($app){
 
     $app->post('token','TokenController@send');
