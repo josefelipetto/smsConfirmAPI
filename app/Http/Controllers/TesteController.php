@@ -30,7 +30,7 @@ class TesteController extends ApiController
     public function index()
     {
 
-        return response()->json(config());
+        return response()->json(config()["database"]);
     }
 
 
