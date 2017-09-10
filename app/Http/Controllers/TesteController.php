@@ -29,8 +29,8 @@ class TesteController extends ApiController
 
     public function index()
     {
-        //$teste = Teste::all();
-        return response()->json(['toma no cu hein' => 'vdd']);
+
+        return response()->json(config());
     }
 
 
