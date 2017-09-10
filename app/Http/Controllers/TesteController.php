@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Aws\Sns\SnsClient;
 use App\Teste;
 
 /**
@@ -19,10 +18,6 @@ class TesteController extends ApiController
      */
     protected $loggedUser;
 
-    /**
-     * @var SnsClient
-     */
-    protected $snsClient;
 
     /**
      * Create a new controller instance.
@@ -30,15 +25,6 @@ class TesteController extends ApiController
      */
     public function __construct()
     {
-        $this->loggedUser = Auth::user();
-
-        $this->snsClient = new SnsClient([
-
-            'region' => 'us-east-1',
-            'version' => 'latest',
-            'profile' => 'smsConfirmAPI'
-        ]);
-
     }
 
     public function index()
