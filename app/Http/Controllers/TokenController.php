@@ -36,7 +36,10 @@ class TokenController extends ApiController
 
             'region' => 'us-east-1',
             'version' => 'latest',
-            'profile' => 'smsConfirmAPI'
+            'credentials' => [
+                'key' => 'AKIAIRXD7257I5YUCMFQ',
+                'secret' => '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'
+            ]
         ]);
 
     }
