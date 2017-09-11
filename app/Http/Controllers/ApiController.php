@@ -52,7 +52,7 @@ class ApiController extends Controller
     public function respondWithError($error, $data = [])
     {
 
-        return $this->respond(
+        return $this->setStatusCode(500)->respond(
 
             [
                 'message' => $error ,
