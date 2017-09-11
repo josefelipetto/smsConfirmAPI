@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Aws\Sns\SnsClient;
 use App\Token;
+use App\User;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class TokenController
@@ -17,7 +19,7 @@ class TokenController extends ApiController
     /**
      * @var \Illuminate\Contracts\Auth\Authenticatable|null
      */
-    protected $loggedUser;
+    protected $loggedUser = "";
 
     /**
      * @var SnsClient
@@ -30,13 +32,8 @@ class TokenController extends ApiController
      */
     public function __construct()
     {
-        $this->middleware('auth', [ 'only' => [
-            'create',
-            'update',
-            'delete'
-        ]]);
 
-        $this->loggedUser = Auth::user();
+//        $this->loggedUser = Auth::user();
 
         $this->snsClient = new SnsClient([
 
@@ -54,10 +51,18 @@ class TokenController extends ApiController
 
     /**
      * @param Request $request
+     * @param $api_token
      * @return \Illuminate\Http\JsonResponse
      */
-    public function send(Request $request)
+    public function send($api_token, Request $request)
     {
+
+        $this->setUser($api_token);
+
+        if( $this->loggedUser == "")
+        {
+            return $this->respondUnauthorized('User not authorized or not found');
+        }
 
         $phoneNumber = (string)( $request->input('phoneNumber'));
 
@@ -103,10 +108,18 @@ class TokenController extends ApiController
     /**
      * @param $telefone
      * @param $typed_token
+     * @param $api_token
      * @return \Illuminate\Http\JsonResponse
      */
-    public function checkToken($telefone, $typed_token)
+    public function checkToken($api_token,$telefone, $typed_token)
     {
+
+        $this->setUser($api_token);
+
+        if( $this->loggedUser == "")
+        {
+            return $this->respondUnauthorized('User not authorized or not found');
+        }
 
         $token = new Token;
 
@@ -114,6 +127,7 @@ class TokenController extends ApiController
 
         if($phoneExistis === NULL || $phoneExistis->count() < 0)
         {
+
             return $this->respondWithError([
                 'message' => 'No new confirmation messages has been sent to this phone number',
                 'messageCode' => '4'
@@ -156,6 +170,15 @@ class TokenController extends ApiController
     private function createToken() : string
     {
         return substr(md5(uniqid(rand(), true)), 0, 7);
+    }
+
+    /**
+     * @param $api_token
+     * @return mixed
+     */
+    private function setUser($api_token)
+    {
+        $this->loggedUser = User::where('api_token',$api_token)->first();
     }
 
 

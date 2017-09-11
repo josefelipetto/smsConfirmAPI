@@ -11,13 +11,12 @@
 |
 */
 
-$app->get('teste', 'TesteController@index');
 
-$app->group(['prefix' => 'api/v1', 'middleware' => 'auth'], function() use ($app){
+$app->group(['prefix' => 'api/v1'], function() use ($app){
 
-    $app->post('token','TokenController@send');
+    $app->post('token/{api_token}','TokenController@send');
 
-    $app->get('token/{telefone}/{typed_token}', 'TokenController@checkToken');
+    $app->get('token/{api_token}/{telefone}/{typed_token}', 'TokenController@checkToken');
 
 });
 
