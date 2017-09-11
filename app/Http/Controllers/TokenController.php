@@ -30,6 +30,12 @@ class TokenController extends ApiController
      */
     public function __construct()
     {
+        $this->middleware('auth', [ 'only' => [
+            'create',
+            'update',
+            'delete'
+        ]]);
+
         $this->loggedUser = Auth::user();
 
         $this->snsClient = new SnsClient([
@@ -41,6 +47,8 @@ class TokenController extends ApiController
                 'secret' => '834UVYxohloCYyCtC3JjukRbc6Sj2BKx1H5piADv'
             ]
         ]);
+
+
 
     }
 
